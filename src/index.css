@@ -272,3 +272,42 @@ main{
   z-index:60; opacity:0; pointer-events:none; transition:opacity var(--motion-med);
 }
 .toast.show{ opacity:1; }
+
+
+@media (max-width: 768px) {
+  .topbar {
+    padding: 12px 16px;
+    flex-wrap: wrap;
+  }
+  .brand {
+    flex: 1;
+  }
+  .desktop-nav {
+    width: 100%;
+    justify-content: space-between;
+    order: 3;
+    margin-top: 16px;
+    gap: 8px;
+  }
+  .nav-link {
+    font-size: 0.9rem;
+    padding: 8px 10px;
+    flex: 1;
+    text-align: center;
+  }
+  main {
+    padding: 20px 15px 100px;
+  }
+  .greeting h1 {
+    font-size: 1.6rem;
+  }
+  .map-canvas {
+    height: 300px;
+  }
+  .trip-route {
+    font-size: 1.3rem;
+  }
+  .leg-top {
+    flex-direction: column;
+  }
+}
