@@ -1,59 +1,72 @@
-import React, { useState } from 'react';
-import { Icons } from '../data';
+import { useState } from 'react';
 
 export default function Journey({ isActive, trip, onNavigate }) {
-  const [showAlert, setShowAlert] = useState(true);
-
+  const [alertOpen, setAlertOpen] = useState(true);
+  
   if (!isActive || !trip) return null;
 
   return (
     <section className="screen active">
       <div className="back-row">
         <button className="icon-btn" onClick={() => onNavigate('home')}>
-          <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" stroke="currentColor"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
-        <div className="badge indigo">{Icons.air} AI-planned journey</div>
+        <span className="badge indigo">
+          <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" stroke="currentColor"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M12 12L2.5 7.5"/></svg>
+          AI-planned journey
+        </span>
       </div>
       
       <div className="trip-head">
-        <div className="trip-route">{trip.title}</div>
-        <div className="trip-meta">{trip.meta}</div>
+        <h1 className="trip-route">{trip.title}</h1>
+        <div className="trip-meta">{trip.time}</div>
       </div>
-      
-      {showAlert && (
+
+      {trip.alert && alertOpen && (
         <div className="alert-banner">
-          <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" stroke="currentColor"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           <div>
-            <strong>Air shuttle delayed 4 minutes</strong>
-            <p>Light headwinds over the harbour district.</p>
+            <strong>{trip.alert.title}</strong>
+            <p>{trip.alert.desc}</p>
           </div>
-          <button className="alert-close" onClick={() => setShowAlert(false)}>X</button>
+          <button className="alert-close" onClick={() => setAlertOpen(false)}>X</button>
         </div>
       )}
 
       <div className="timeline">
-        {trip.legs.map((leg, i) => {
-          const isVehicle = ['bus', 'train', 'air'].includes(leg.mode);
-          return (
-            <div key={i} className="leg">
-              <div className="leg-track">
-                <div className={`leg-dot ${isVehicle ? 'mode-accent' : ''}`}>{Icons[leg.mode]}</div>
-                {i !== trip.legs.length - 1 && <div className="leg-line"></div>}
+        {trip.legs.map((leg, idx) => (
+          <div className="leg" key={leg.id}>
+            <div className="leg-track">
+              <div className={`leg-dot ${leg.mode === 'accent' ? 'mode-accent' : ''}`}>
+                
+                {leg.icon}
               </div>
-              <div className="leg-body">
-                <div className="leg-top"><h4>{leg.title}</h4><span className="leg-time">{leg.time}</span></div>
-                <div className="leg-sub">{leg.sub}</div>
-                <div className="leg-tags">
-                  {leg.wheelchair ? <span className="badge green">{Icons.wheelchair} Step-free</span> : <span className="badge red">Not step-free</span>}
-                </div>
-              </div>
+              {idx < trip.legs.length - 1 && <div className="leg-line"></div>}
             </div>
-          )
-        })}
+            <div className="leg-body">
+              <div className="leg-top">
+                <h4>{leg.title}</h4>
+                <span className="leg-time">{leg.time}</span>
+              </div>
+              <div className="leg-sub">{leg.sub}</div>
+              {leg.tags && (
+                <div className="leg-tags">
+                  {leg.tags.map(tag => (
+                    <span key={tag} className={tag === 'Step-free' ? 'badge green' : 'badge red'}>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
       </div>
 
       <div className="track-cta">
-        <button className="btn btn-primary btn-block" onClick={() => onNavigate('map')}>Track this journey live</button>
+        <button className="btn btn-primary btn-block" onClick={() => onNavigate('map')}>
+          Track this journey live
+        </button>
       </div>
     </section>
   );
