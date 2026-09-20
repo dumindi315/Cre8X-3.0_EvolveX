@@ -11,11 +11,7 @@ export const TRIPS = {
     id: 'commute',
     title: 'Kalutara → 99x',
     time: 'Depart 7:00 AM · Arrive 8:05 AM · 1 h 5 min · 3 legs',
-    alert: {
-      type: 'amber',
-      title: 'Train delayed 5 minutes',
-      desc: 'Speed restrictions near Panadura station.'
-    },
+    alert: null, 
     legs: [
       {
         id: 1,
@@ -51,7 +47,11 @@ export const TRIPS = {
     id: 'flight',
     title: 'To Colombo International Airport',
     time: 'Depart 4:30 PM · Arrive 5:55 PM · 1 h 25 min · 2 legs',
-    alert: null,
+    alert: {
+      type: 'amber',
+      title: 'Air shuttle delayed 4 minutes',
+      desc: 'Light headwinds over the airport area.'
+    }, 
     legs: [
       {
         id: 1,
