@@ -1,122 +1,78 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import React, { useState, useEffect } from 'react';
+import Home from './components/Home';
+import Journey from './components/Journey';
+import LiveMap from './components/LiveMap';
+import { TRIPS } from './data';
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [activeScreen, setActiveScreen] = useState('home');
+  const [currentTripId, setCurrentTripId] = useState('commute');
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [toastMsg, setToastMsg] = useState('');
+
+  const [a11y, setA11y] = useState({
+    largeText: false, highContrast: false, wheelchairOnly: false, comfortOnly: false, reduceMotion: false
+  });
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('a11y-large', a11y.largeText);
+    document.documentElement.classList.toggle('a11y-contrast', a11y.highContrast);
+    document.documentElement.classList.toggle('a11y-reduce-motion', a11y.reduceMotion);
+  }, [a11y]);
+
+  const showToast = (msg) => {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(''), 2600);
+  };
+
+  const navigate = (screen, tripId = null) => {
+    if (tripId) setCurrentTripId(tripId);
+    setActiveScreen(screen);
+  };
+
+  const toggleA11y = (key) => setA11y(prev => ({ ...prev, [key]: !prev[key] }));
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <div id="app">
+      <header className="topbar">
+        <div className="brand">
+          <div className="brand-text">Wayline</div>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+        <button className="icon-btn" onClick={() => setSettingsOpen(true)}>⚙️</button>
+      </header>
 
-      <div className="ticks"></div>
+      <main>
+        <Home isActive={activeScreen === 'home'} a11y={a11y} toggleA11y={toggleA11y} onNavigate={navigate} showToast={showToast} />
+        <Journey isActive={activeScreen === 'journey'} trip={TRIPS[currentTripId]} onNavigate={navigate} />
+        <LiveMap isActive={activeScreen === 'map'} a11y={a11y} onNavigate={navigate} />
+      </main>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      <nav className="tabbar">
+        <button className={`tab ${activeScreen === 'home' ? 'active' : ''}`} onClick={() => navigate('home')}>Home</button>
+        <button className={`tab ${activeScreen === 'journey' ? 'active' : ''}`} onClick={() => navigate('journey')}>Journey</button>
+        <button className={`tab ${activeScreen === 'map' ? 'active' : ''}`} onClick={() => navigate('map')}>Live Map</button>
+      </nav>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      {/* Settings Overlay */}
+      <div className={`overlay ${settingsOpen ? 'open' : ''}`}>
+        <div className="overlay-bg" onClick={() => setSettingsOpen(false)}></div>
+        <div className="sheet">
+          <div className="sheet-head">
+            <h2>Accessibility Settings</h2>
+            <button className="close-x" onClick={() => setSettingsOpen(false)}>X</button>
+          </div>
+          <div className="setting-row">
+            <h4>Large text</h4>
+            <div className={`switch ${a11y.largeText ? 'on' : ''}`} onClick={() => toggleA11y('largeText')}></div>
+          </div>
+          <div className="setting-row">
+            <h4>High contrast</h4>
+            <div className={`switch ${a11y.highContrast ? 'on' : ''}`} onClick={() => toggleA11y('highContrast')}></div>
+          </div>
+        </div>
+      </div>
+
+      <div className={`toast ${toastMsg ? 'show' : ''}`}>{toastMsg}</div>
+    </div>
+  );
 }
-
-export default App
