@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Home from './components/Home';
 import Journey from './components/Journey';
 import LiveMap from './components/LiveMap';
@@ -34,24 +34,28 @@ export default function App() {
 
   return (
     <div id="app">
+      {/* Top Navbar */}
       <header className="topbar">
         <div className="brand">
           <div className="brand-text">Wayline</div>
         </div>
+        
+        {/* New Desktop Navigation */}
+        <nav className="desktop-nav">
+          <button className={`nav-link ${activeScreen === 'home' ? 'active' : ''}`} onClick={() => navigate('home')}>Home</button>
+          <button className={`nav-link ${activeScreen === 'journey' ? 'active' : ''}`} onClick={() => navigate('journey')}>Journey</button>
+          <button className={`nav-link ${activeScreen === 'map' ? 'active' : ''}`} onClick={() => navigate('map')}>Live Map</button>
+        </nav>
+
         <button className="icon-btn" onClick={() => setSettingsOpen(true)}>⚙️</button>
       </header>
 
+      {/* Main Content Area */}
       <main>
         <Home isActive={activeScreen === 'home'} a11y={a11y} toggleA11y={toggleA11y} onNavigate={navigate} showToast={showToast} />
         <Journey isActive={activeScreen === 'journey'} trip={TRIPS[currentTripId]} onNavigate={navigate} />
         <LiveMap isActive={activeScreen === 'map'} a11y={a11y} onNavigate={navigate} />
       </main>
-
-      <nav className="tabbar">
-        <button className={`tab ${activeScreen === 'home' ? 'active' : ''}`} onClick={() => navigate('home')}>Home</button>
-        <button className={`tab ${activeScreen === 'journey' ? 'active' : ''}`} onClick={() => navigate('journey')}>Journey</button>
-        <button className={`tab ${activeScreen === 'map' ? 'active' : ''}`} onClick={() => navigate('map')}>Live Map</button>
-      </nav>
 
       {/* Settings Overlay */}
       <div className={`overlay ${settingsOpen ? 'open' : ''}`}>
