@@ -1,4 +1,3 @@
-import React from 'react';
 import { Icons } from '../data';
 
 export default function LiveMap({ isActive, a11y, onNavigate }) {

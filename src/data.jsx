@@ -1,4 +1,3 @@
-import React from 'react';
 
 export const Icons = {
   walk: <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="13" cy="4" r="2"/><path d="M15 8 12 9l-2 6 3 6M9 15l-3 1-2 5M10 10l3 1 3-2"/></svg>,
